@@ -1,94 +1,77 @@
 var http = require('http');
-exports.handler = function(event, context) {
-  try {
-    console.log(
-      'event.session.application.applicationId=' +
-        event.session.application.applicationId
-    );
+exports.handler = function (event, context) {
+    try {
+        console.log("event.session.application.applicationId=" + event.session.application.applicationId);
 
-    if (event.session.new) {
-      onSessionStarted({ requestId: event.request.requestId }, event.session);
-    }
 
-    if (event.request.type === 'LaunchRequest') {
-      onLaunch(event.request, event.session, function callback(
-        sessionAttributes,
-        speechletResponse
-      ) {
-        context.succeed(buildResponse(sessionAttributes, speechletResponse));
-      });
-    } else if (event.request.type === 'IntentRequest') {
-      onIntent(event.request, event.session, function callback(
-        sessionAttributes,
-        speechletResponse
-      ) {
-        context.succeed(buildResponse(sessionAttributes, speechletResponse));
-      });
-    } else if (event.request.type === 'SessionEndedRequest') {
-      onSessionEnded(event.request, event.session);
-      context.succeed();
+        if (event.session.new) {
+            onSessionStarted({requestId: event.request.requestId}, event.session);
+        }
+
+        if (event.request.type === "LaunchRequest") {
+            onLaunch(event.request,
+                event.session,
+                function callback(sessionAttributes, speechletResponse) {
+                    context.succeed(buildResponse(sessionAttributes, speechletResponse));
+                });
+        } else if (event.request.type === "IntentRequest") {
+            onIntent(event.request,
+                event.session,
+                function callback(sessionAttributes, speechletResponse) {
+                    context.succeed(buildResponse(sessionAttributes, speechletResponse));
+                });
+        } else if (event.request.type === "SessionEndedRequest") {
+            onSessionEnded(event.request, event.session);
+            context.succeed();
+        }
+    } catch (e) {
+        context.fail("Exception: " + e);
     }
-  } catch (e) {
-    context.fail('Exception: ' + e);
-  }
 };
 
 /**
  * Called when the session starts.
  */
 function onSessionStarted(sessionStartedRequest, session) {
-  console.log(
-    'onSessionStarted requestId=' +
-      sessionStartedRequest.requestId +
-      ', sessionId=' +
-      session.sessionId
-  );
+    console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId
+        + ", sessionId=" + session.sessionId);
 
-  // add any session init logic here
+    // add any session init logic here
 }
 
 /**
  * Called when the user invokes the skill without specifying what they want.
  */
 function onLaunch(launchRequest, session, callback) {
-  console.log(
-    'onLaunch requestId=' +
-      launchRequest.requestId +
-      ', sessionId=' +
-      session.sessionId
-  );
+    console.log("onLaunch requestId=" + launchRequest.requestId
+        + ", sessionId=" + session.sessionId);
 
-  var cardTitle = 'Hello, World!';
-  var speechOutput =
-    'Welcome to Pill Pal! You can ask what your current pills are';
-  callback(
-    session.attributes,
-    buildSpeechletResponse(cardTitle, speechOutput, '', false)
-  );
+    var cardTitle = "Hello, World!"
+    var speechOutput = "Welcome to Pill Pal! You can ask what your current pills are";
+    callback(session.attributes,
+        buildSpeechletResponse(cardTitle, speechOutput, "", false));
 }
 
 /**
  * Called when the user specifies an intent for this skill.
  */
 function onIntent(intentRequest, session, callback) {
-  console.log(
-    'onIntent requestId=' +
-      intentRequest.requestId +
-      ', sessionId=' +
-      session.sessionId
-  );
+    console.log("onIntent requestId=" + intentRequest.requestId
+        + ", sessionId=" + session.sessionId);
 
-  var intent = intentRequest.intent,
-    intentName = intentRequest.intent.name;
+    var intent = intentRequest.intent,
+        intentName = intentRequest.intent.name;
 
-  // dispatch custom intents to handlers here
-  if (intentName == 'getName') {
-    giveName(intent, session, callback);
-  } else if (intentName == 'getPills') {
-    giveCurrentPills(intent, session, callback);
-  } else {
-    throw 'Invalid intent';
-  }
+    // dispatch custom intents to handlers here
+    if (intentName == 'getName') {
+        giveName(intent, session, callback);
+    }
+    else if (intentName == 'getPills') {
+        giveCurrentPills(intent, session, callback);
+    }
+    else {
+        throw "Invalid intent";
+    }
 }
 
 /**
@@ -96,156 +79,125 @@ function onIntent(intentRequest, session, callback) {
  * Is not called when the skill returns shouldEndSession=true.
  */
 function onSessionEnded(sessionEndedRequest, session) {
-  console.log(
-    'onSessionEnded requestId=' +
-      sessionEndedRequest.requestId +
-      ', sessionId=' +
-      session.sessionId
-  );
+    console.log("onSessionEnded requestId=" + sessionEndedRequest.requestId
+        + ", sessionId=" + session.sessionId);
 
-  // Add any cleanup logic here
+    // Add any cleanup logic here
 }
 
 function giveName(intent, session, callback) {
-  // callback(session.attributes,
-  //     buildSpeechletResponseWithoutCard("Your current pills are adderall", "", "true"));
-  http
-    .get(
-      {
+    // callback(session.attributes,
+    //     buildSpeechletResponseWithoutCard("Your current pills are adderall", "", "true"));
+    http.get({
         host: 'pillpal-app.de',
-        path: '/User/?email@gmail.com',
-      },
-      function(res) {
+        path: '/User/email@gmail.com',
+    }, function(res) {
         res.setEncoding('utf8');
         // Continuously update stream with data
         var body = '';
         res.on('data', function(d) {
-          body += d;
+            body += d;
         });
         res.on('end', function() {
-          try {
-            // console.log(body);
-            var parsed = JSON.parse(body);
-            // callback(parsed.MRData);
 
-            callback(
-              session.attributes,
-              buildSpeechletResponseWithoutCard(
-                'You are currently on the account that belongs to ' +
-                  parsed[0].Name,
-                '',
-                'true'
-              )
-            );
-
-            //return parsed.MRData;
-          } catch (err) {
-            console.error('Unable to parse response as JSON', err);
-            throw err;
-          }
+            try {
+                // console.log(body);
+                var parsed = JSON.parse(body);
+                // callback(parsed.MRData);
+                
+                callback(session.attributes,
+                    buildSpeechletResponseWithoutCard("You are currently on the account that belongs to " + parsed.Name + ".", "", "true"));
+                
+                //return parsed.MRData;
+            } catch (err) {
+                console.error('Unable to parse response as JSON', err);
+                throw(err);
+            }
         });
-      }
-    )
-    .on('error', function(err) {
-      // handle errors with the request itself
-      console.error('Error with the request:', err.message);
-      throw err;
+    }).on('error', function(err) {
+        // handle errors with the request itself
+        console.error('Error with the request:', err.message);
+        throw(err);
     });
 }
 
 function giveCurrentPills(intent, session, callback) {
-  // callback(session.attributes,
-  //     buildSpeechletResponseWithoutCard("Your current pills are adderall", "", "true"));
-  http
-    .get(
-      {
+    http.get({
         host: 'pillpal-app.de',
-        path: '/Takes/?email@gmail.com',
-      },
-      function(res) {
+        path: '/Takes/email@gmail.com',
+    }, function(res) {
         res.setEncoding('utf8');
         // Continuously update stream with data
         var body = '';
         res.on('data', function(d) {
-          body += d;
+            body += d;
         });
         res.on('end', function() {
-          try {
-            // console.log(body);
-            var parsed = JSON.parse(body);
-            // callback(parsed.MRData);
 
-            callback(
-              session.attributes,
-              buildSpeechletResponseWithoutCard(
-                'You are currently taking ' + parsed[0].Medication_Name,
-                '',
-                'true'
-              )
-            );
-
-            //return parsed.MRData;
-          } catch (err) {
-            console.error('Unable to parse response as JSON', err);
-            throw err;
-          }
+            try {
+                // console.log(body);
+                var parsed = JSON.parse(body);
+                // callback(parsed.MRData);
+                
+                callback(session.attributes,
+                    buildSpeechletResponseWithoutCard("You are currently taking " + parsed[0].Medication_Name + " and " + parsed[1].Medication_Name + ".", "", "true"));
+                
+                //return parsed.MRData;
+            } catch (err) {
+                console.error('Unable to parse response as JSON', err);
+                throw(err);
+            }
         });
-      }
-    )
-    .on('error', function(err) {
-      // handle errors with the request itself
-      console.error('Error with the request:', err.message);
-      throw err;
+    }).on('error', function(err) {
+        // handle errors with the request itself
+        console.error('Error with the request:', err.message);
+        throw(err);
     });
 }
 
 // ------- Helper functions to build responses -------
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
-  return {
-    outputSpeech: {
-      type: 'PlainText',
-      text: output,
-    },
-    card: {
-      type: 'Simple',
-      title: title,
-      content: output,
-    },
-    reprompt: {
-      outputSpeech: {
-        type: 'PlainText',
-        text: repromptText,
-      },
-    },
-    shouldEndSession: shouldEndSession,
-  };
+    return {
+        outputSpeech: {
+            type: "PlainText",
+            text: output
+        },
+        card: {
+            type: "Simple",
+            title: title,
+            content: output
+        },
+        reprompt: {
+            outputSpeech: {
+                type: "PlainText",
+                text: repromptText
+            }
+        },
+        shouldEndSession: shouldEndSession
+    };
 }
 
-function buildSpeechletResponseWithoutCard(
-  output,
-  repromptText,
-  shouldEndSession
-) {
-  return {
-    outputSpeech: {
-      type: 'PlainText',
-      text: output,
-    },
-    reprompt: {
-      outputSpeech: {
-        type: 'PlainText',
-        text: repromptText,
-      },
-    },
-    shouldEndSession: shouldEndSession,
-  };
+function buildSpeechletResponseWithoutCard(output, repromptText, shouldEndSession) {
+    return {
+        outputSpeech: {
+            type: "PlainText",
+            text: output
+        },
+        reprompt: {
+            outputSpeech: {
+                type: "PlainText",
+                text: repromptText
+            }
+        },
+        shouldEndSession: shouldEndSession
+    };
 }
 
 function buildResponse(sessionAttributes, speechletResponse) {
-  return {
-    version: '1.0',
-    sessionAttributes: sessionAttributes,
-    response: speechletResponse,
-  };
+    return {
+        version: "1.0",
+        sessionAttributes: sessionAttributes,
+        response: speechletResponse
+    };
 }
