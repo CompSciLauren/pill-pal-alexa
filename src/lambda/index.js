@@ -205,37 +205,48 @@ function addPill(intent, session, callback) {
 }
 
 function removeAllPills(intent, session, callback) {
-    http.get({
-        host: 'pillpal-app.de',
-        path: '/Takes/email@gmail.com',
-    }, function(res) {
-        res.setEncoding('utf8');
-        // Continuously update stream with data
-        var body = '';
-        res.on('data', function(d) {
-            body += d;
-        });
-        res.on('end', function() {
+    const request = require('request');
+    
+                // callback(session.attributes,
+                    // buildSpeechletResponseWithoutCard("Okay, all of your pills have been removed.", "", "true"));
+    request.delete('https://pillpal-app.de/Takes/email@gmail.com', (error, response, body) => {
+        console.log(error);
+        console.log(body);
+        console.log(response);
+                        callback(session.attributes,
+                    buildSpeechletResponseWithoutCard('Deleted!', "", "true"));
+    })
+    // http.get({
+    //     host: 'pillpal-app.de',
+    //     path: '/Takes/email@gmail.com',
+    // }, function(res) {
+    //     res.setEncoding('utf8');
+    //     // Continuously update stream with data
+    //     var body = '';
+    //     res.on('data', function(d) {
+    //         body += d;
+    //     });
+    //     res.on('end', function() {
 
-            try {
-                // console.log(body);
-                var parsed = JSON.parse(body);
-                // callback(parsed.MRData);
+    //         try {
+    //             // console.log(body);
+    //             var parsed = JSON.parse(body);
+    //             // callback(parsed.MRData);
                 
-                callback(session.attributes,
-                    buildSpeechletResponseWithoutCard("Okay, all of your pills have been removed.", "", "true"));
+    //             callback(session.attributes,
+    //                 buildSpeechletResponseWithoutCard("Okay, all of your pills have been removed.", "", "true"));
                 
-                //return parsed.MRData;
-            } catch (err) {
-                console.error('Unable to parse response as JSON', err);
-                throw(err);
-            }
-        });
-    }).on('error', function(err) {
-        // handle errors with the request itself
-        console.error('Error with the request:', err.message);
-        throw(err);
-    });
+    //             //return parsed.MRData;
+    //         } catch (err) {
+    //             console.error('Unable to parse response as JSON', err);
+    //             throw(err);
+    //         }
+    //     });
+    // }).on('error', function(err) {
+    //     // handle errors with the request itself
+    //     console.error('Error with the request:', err.message);
+    //     throw(err);
+    // });
 }
 
 // ------- Helper functions to build responses -------
