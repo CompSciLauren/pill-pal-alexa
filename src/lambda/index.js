@@ -142,9 +142,28 @@ function giveCurrentPills(intent, session, callback) {
                 // console.log(body);
                 var parsed = JSON.parse(body);
                 // callback(parsed.MRData);
-                
-                callback(session.attributes,
-                    buildSpeechletResponseWithoutCard("You are currently taking " + parsed[0].Medication_Name + " and " + parsed[1].Medication_Name + ".", "", "true"));
+                if (parsed.length > 0)
+                {
+                    let listOfMeds = "";
+                    for (let i = 0; i < parsed.length; i++)
+                    {
+                        if (i == 0)
+                        {
+                             listOfMeds += parsed[i].Medication_Name;   
+                        }
+                        else
+                        {
+                            listOfMeds += " and " + parsed[i].Medication_Name;  
+                        }
+                    }
+                    callback(session.attributes,
+                    buildSpeechletResponseWithoutCard("You are currently taking " + listOfMeds + ".", "", "true"));
+                }
+                else
+                {
+                    callback(session.attributes,
+                    buildSpeechletResponseWithoutCard("You are not currently taking any medication.", "", "true"));
+                }
                 
                 //return parsed.MRData;
             } catch (err) {
