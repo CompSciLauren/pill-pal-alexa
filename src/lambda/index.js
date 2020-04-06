@@ -47,7 +47,7 @@ function onLaunch(launchRequest, session, callback) {
         + ", sessionId=" + session.sessionId);
 
     var cardTitle = "Hello, World!"
-    var speechOutput = "Welcome to Pill Pal! You can ask what your current pills are";
+    var speechOutput = "Welcome to Pill Pal! What would you like to do or know about?";
     callback(session.attributes,
         buildSpeechletResponse(cardTitle, speechOutput, "", false));
 }
@@ -110,7 +110,7 @@ function giveName(intent, session, callback) {
                 // callback(parsed.MRData);
                 
                 callback(session.attributes,
-                    buildSpeechletResponseWithoutCard("You are currently on the account that belongs to " + parsed.Name + ".", "", "true"));
+                    buildSpeechletResponseWithoutCard("You are currently managing the account that belongs to " + parsed.Name + ".", "", "true"));
                 
                 //return parsed.MRData;
             } catch (err) {
@@ -206,7 +206,7 @@ function addPill(intent, session, callback) {
                 // callback(parsed.MRData);
                 
                 callback(session.attributes,
-                    buildSpeechletResponseWithoutCard("Okay, added a new pill.", "", "true"));
+                    buildSpeechletResponseWithoutCard("Okay, I've added a new pill.", "", "true"));
                 
                 //return parsed.MRData;
             } catch (err) {
