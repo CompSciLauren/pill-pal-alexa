@@ -185,10 +185,10 @@ function addPill(intent, session, callback) {
       'Amount_Prescribed': 1,
       'Refills': 3
     });
-  
+    
     http.get({
         host: 'pillpal-app.de',
-        path: '/Takes',
+        path: '/Takes/email@gmail.com',
     }, function(res) {
         res.setEncoding('utf8');
         // Continuously update stream with data
@@ -199,15 +199,13 @@ function addPill(intent, session, callback) {
         res.on('end', function() {
 
             try {
-                res.write(postData);
-    
                 // console.log(body);
                 var parsed = JSON.parse(body);
                 // callback(parsed.MRData);
                 
                 callback(session.attributes,
-                    buildSpeechletResponseWithoutCard("Okay, I've added a new pill.", "", "true"));
-                
+                buildSpeechletResponseWithoutCard("What is the name of the pill that you would like to add?", "", "true"));
+
                 //return parsed.MRData;
             } catch (err) {
                 console.error('Unable to parse response as JSON', err);
