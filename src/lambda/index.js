@@ -178,66 +178,22 @@ function giveCurrentPills(intent, session, callback) {
     });
 }
 
-// function addPill(intent, session, callback) {
-//     var postData = JSON.stringify({
-//       'User_Email' : 'email@gmail.com',
-//       'Medication_Name': 'Meloxicam',
-//       'Amount_Prescribed': 1,
-//       'Refills': 3
-//     });
-    
-//     http.get({
-//         host: 'pillpal-app.de',
-//         path: '/Takes/email@gmail.com',
-//     }, function(res) {
-//         res.setEncoding('utf8');
-//         // Continuously update stream with data
-//         var body = '';
-//         res.on('data', function(d) {
-//             body += d;
-//         });
-//         res.on('end', function() {
-
-//             try {
-//                 // console.log(body);
-//                 var parsed = JSON.parse(body);
-//                 // callback(parsed.MRData);
-                
-//                 callback(session.attributes,
-//                 buildSpeechletResponseWithoutCard("What is the name of the pill that you would like to add?", "", "true"));
-
-//                 //return parsed.MRData;
-//             } catch (err) {
-//                 console.error('Unable to parse response as JSON', err);
-//                 throw(err);
-//             }
-//         });
-//     }).on('error', function(err) {
-//         // handle errors with the request itself
-//         console.error('Error with the request:', err.message);
-//         throw(err);
-//     });
-// }
-
 function addPill(intent, session, callback) {
     const request = require('request');
     
-    var postData = JSON.stringify({
+    var postData = {
       'User_Email' : 'email@gmail.com',
-      'Medication_Name': 'Birth Control',
+      'Medication_Name': 'Meloxicam',
       'Amount_Prescribed': 4,
       'Refills': 6
-    });
+    };
     
-    request.post('https://pillpal-app.de/Takes', {json: {'User_Email' : 'email@gmail.com',
-      'Medication_Name': 'Birth Control',
-      'Amount_Prescribed': 4,
-      'Refills': 6}}, (error, response, body) => {
+    request.post('https://pillpal-app.de/Takes', {json: postData}, (error, response, body) => {
         console.log(error);
         console.log(body);
         console.log(response);
                         callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Hello, ' + body + '.', "", "true"));
+                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill.', "", "true"));
     })
 }
 
