@@ -205,7 +205,7 @@ function removeOnePill(intent, session, callback) {
     
     var postData = {
       'User_Email' : 'email@gmail.com',
-      'Medication_Name': 'Meloxicam'
+      'Medication_Name': intent.slots.Pill.value
     };
     
     request.delete('https://pillpal-app.de/Takes/email@gmail.com/' + postData.Medication_Name, (error, response, body) => {
