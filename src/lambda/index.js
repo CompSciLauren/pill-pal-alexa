@@ -186,7 +186,7 @@ function addPill(intent, session, callback) {
     
     var postData = {
       'User_Email' : 'email@gmail.com',
-      'Medication_Name': 'Meloxicam',
+      'Medication_Name': intent.slots.Pill.value,
       'Amount_Prescribed': 4,
       'Refills': 6
     };
