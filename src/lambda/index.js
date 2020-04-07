@@ -187,8 +187,8 @@ function addPill(intent, session, callback) {
     var postData = {
       'User_Email' : 'email@gmail.com',
       'Medication_Name': intent.slots.Pill.value,
-      'Amount_Prescribed': 4,
-      'Refills': 6
+      'Amount_Prescribed': intent.slots.Amount_Prescribed.value,
+      'Refills': intent.slots.Refills.value
     };
     
     request.post('https://pillpal-app.de/Takes', {json: postData}, (error, response, body) => {
@@ -196,7 +196,7 @@ function addPill(intent, session, callback) {
         console.log(body);
         console.log(response);
                         callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill.', "", "true"));
+                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' with amount of ' + postData.Amount_Prescribed + ' and ' + postData.Refills + ' refills as a current pill.', "", "true"));
     })
 }
 
