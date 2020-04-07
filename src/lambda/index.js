@@ -196,7 +196,7 @@ function addPill(intent, session, callback) {
         console.log(body);
         console.log(response);
                         callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' with amount of ' + postData.Amount_Prescribed + ' and ' + postData.Refills + ' refills as a current pill.', "", "true"));
+                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill. You need to take ' + postData.Amount_Prescribed + ' each day and you have ' + postData.Refills + ' refills remaining.', "", "true"));
     })
 }
 
