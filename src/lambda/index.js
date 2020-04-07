@@ -72,6 +72,9 @@ function onIntent(intentRequest, session, callback) {
     else if (intentName == 'addPill') {
         addPill(intent, session, callback);
     }
+    else if (intentName == 'removeOnePill') {
+        removeOnePill(intent, session, callback);
+    }
     else if (intentName == 'removeAllPills') {
         removeAllPills(intent, session, callback);
     }
@@ -194,6 +197,23 @@ function addPill(intent, session, callback) {
         console.log(response);
                         callback(session.attributes,
                     buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill.', "", "true"));
+    })
+}
+
+function removeOnePill(intent, session, callback) {
+    const request = require('request');
+    
+    var postData = {
+      'User_Email' : 'email@gmail.com',
+      'Medication_Name': 'Meloxicam'
+    };
+    
+    request.delete('https://pillpal-app.de/Takes/email@gmail.com/' + postData.Medication_Name, (error, response, body) => {
+        console.log(error);
+        console.log(body);
+        console.log(response);
+                        callback(session.attributes,
+                    buildSpeechletResponseWithoutCard('Okay, I\'ve deleted ' + postData.Medication_Name + ' from your current pills.', "", "true"));
     })
 }
 
