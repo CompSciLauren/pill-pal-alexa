@@ -63,23 +63,25 @@ function onIntent(intentRequest, session, callback) {
         intentName = intentRequest.intent.name;
 
     // dispatch custom intents to handlers here
-    if (intentName == 'getName') {
-        giveName(intent, session, callback);
-    }
-    else if (intentName == 'getPills') {
-        giveCurrentPills(intent, session, callback);
-    }
-    else if (intentName == 'addPill') {
-        addPill(intent, session, callback);
-    }
-    else if (intentName == 'removeOnePill') {
-        removeOnePill(intent, session, callback);
-    }
-    else if (intentName == 'removeAllPills') {
-        removeAllPills(intent, session, callback);
-    }
-    else {
-        throw "Invalid intent";
+    switch(intentName)
+    {
+        case 'getName':
+            giveName(intent, session, callback);
+            break;
+        case 'getPills':
+            giveCurrentPills(intent, session, callback);
+            break;
+        case 'addPill':
+            addPill(intent, session, callback);
+            break;
+        case 'removeOnePill':
+            removeOnePill(intent, session, callback);
+            break;
+        case 'removeAllPills':
+            removeAllPills(intent, session, callback);
+            break;
+        default:
+            throw "Invalid intent";
     }
 }
 
