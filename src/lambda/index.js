@@ -192,11 +192,21 @@ function addPill(intent, session, callback) {
     };
     
     request.post('https://pillpal-app.de/Takes', {json: postData}, (error, response, body) => {
-        console.log(error);
-        console.log(body);
-        console.log(response);
-                        callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill. You need to take ' + postData.Amount_Prescribed + ' each day and you have ' + postData.Refills + ' refills remaining.', "", "true"));
+        console.log('ERROR: ' + error);
+        console.log('BODY: ' + JSON.stringify(body.message));
+        console.log('RESPONSE: ' + JSON.stringify(response));
+        if (JSON.stringify(body.message).includes('ER_DUP_ENTRY'))
+        {
+            callback(session.attributes, buildSpeechletResponseWithoutCard('You already have ' + postData.Medication_Name + ' as a current pill.', "", "true"));
+        }
+        else if (JSON.stringify(body.message).includes('ER_NO_REFERENCED_ROW_2'))
+        {
+            callback(session.attributes, buildSpeechletResponseWithoutCard('Sorry, ' + postData.Medication_Name + ' is not currently registered with PillPal as an available medication. Go to the Help page in Settings on the PillPal app for more information or to report a problem.', "", "true"));
+        }
+        else
+        {
+            callback(session.attributes, buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill. You need to take ' + postData.Amount_Prescribed + ' each day and you have ' + postData.Refills + ' refills remaining.', "", "true"));   
+        }
     })
 }
 
@@ -209,11 +219,19 @@ function removeOnePill(intent, session, callback) {
     };
     
     request.delete('https://pillpal-app.de/Takes/email@gmail.com/' + postData.Medication_Name, (error, response, body) => {
-        console.log(error);
-        console.log(body);
-        console.log(response);
-                        callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Okay, I\'ve deleted ' + postData.Medication_Name + ' from your current pills.', "", "true"));
+        console.log('ERROR: ' + error);
+        console.log('BODY: ' + JSON.stringify(body));
+        console.log('RESPONSE: ' + JSON.stringify(response));
+        if (JSON.stringify(response.statusCode) == 404)
+        {
+            callback(session.attributes,
+                buildSpeechletResponseWithoutCard(postData.Medication_Name + ' is not one of your current pills.', "", "true"));
+        }
+        else
+        {
+            callback(session.attributes,
+                buildSpeechletResponseWithoutCard('Okay, I\'ve deleted ' + postData.Medication_Name + ' from your current pills.', "", "true"));   
+        }
     })
 }
 
@@ -221,11 +239,19 @@ function removeAllPills(intent, session, callback) {
     const request = require('request');
     
     request.delete('https://pillpal-app.de/Takes/email@gmail.com', (error, response, body) => {
-        console.log(error);
-        console.log(body);
-        console.log(response);
-                        callback(session.attributes,
-                    buildSpeechletResponseWithoutCard('Okay, all of your pills have been removed.', "", "true"));
+        console.log('ERROR: ' + error);
+        console.log('BODY: ' + JSON.stringify(body));
+        console.log('RESPONSE: ' + JSON.stringify(response));
+        if(JSON.stringify(response.statusCode) == 404)
+        {
+            callback(session.attributes,
+                buildSpeechletResponseWithoutCard('You are not currently taking any medication.', "", "true"));   
+        }
+        else
+        {
+            callback(session.attributes,
+                buildSpeechletResponseWithoutCard('Okay, all of your pills have been removed.', "", "true"));
+        }
     })
 }
 
