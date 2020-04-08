@@ -46,7 +46,7 @@ function onLaunch(launchRequest, session, callback) {
     console.log("onLaunch requestId=" + launchRequest.requestId
         + ", sessionId=" + session.sessionId);
 
-    var cardTitle = "Hello, World!"
+    var cardTitle = "Hello, World!";
     var speechOutput = "Welcome to Pill Pal! What would you like to do or know about?";
     callback(session.attributes,
         buildSpeechletResponse(cardTitle, speechOutput, "", false));
@@ -209,7 +209,7 @@ function addPill(intent, session, callback) {
         {
             callback(session.attributes, buildSpeechletResponseWithoutCard('Okay, I\'ve added ' + postData.Medication_Name + ' as a current pill. You need to take ' + postData.Amount_Prescribed + ' each day and you have ' + postData.Refills + ' refills remaining.', "", "true"));   
         }
-    })
+    });
 }
 
 function removeOnePill(intent, session, callback) {
@@ -234,7 +234,7 @@ function removeOnePill(intent, session, callback) {
             callback(session.attributes,
                 buildSpeechletResponseWithoutCard('Okay, I\'ve deleted ' + postData.Medication_Name + ' from your current pills.', "", "true"));   
         }
-    })
+    });
 }
 
 function removeAllPills(intent, session, callback) {
@@ -254,7 +254,7 @@ function removeAllPills(intent, session, callback) {
             callback(session.attributes,
                 buildSpeechletResponseWithoutCard('Okay, all of your pills have been removed.', "", "true"));
         }
-    })
+    });
 }
 
 // ------- Helper functions to build responses -------
