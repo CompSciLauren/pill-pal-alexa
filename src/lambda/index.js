@@ -186,9 +186,33 @@ function giveCurrentPills(intent, session, callback) {
 function addPill(intent, session, callback) {
     const request = require('request');
     
+    let medID = 'error';
+    switch(intent.slots.Pill.value) {
+        case 'adderall':
+            medID = 0;
+            break;
+        case 'birth control':
+            medID = 1;
+            break;
+        case 'hydrocodone':
+            medID = 2;
+            break;
+        case 'meloxicam':
+            medID = 3;
+        case 'methadone':
+            medID = 4;
+            break;
+        case 'opioid':
+            medID = 5;
+            break;
+        case 'oxycodone':
+            medID = '6';
+            break;
+    }
+    
     var postData = {
       'User_ID' : '0',
-      'Medication_ID': 'error',
+      'Medication_ID': medID,
       'Amount_Prescribed': intent.slots.Amount_Prescribed.value,
       'Refills': intent.slots.Refills.value,
       'Display_Name': intent.slots.Pill.value
@@ -216,12 +240,37 @@ function addPill(intent, session, callback) {
 function removeOnePill(intent, session, callback) {
     const request = require('request');
     
+    let medID = '3';
+    switch(intent.slots.Pill.value) {
+        case 'adderall':
+            medID = 0;
+            break;
+        case 'birth control':
+            medID = 1;
+            break;
+        case 'hydrocodone':
+            medID = 2;
+            break;
+        case 'meloxicam':
+            medID = 3;
+        case 'methadone':
+            medID = 4;
+            break;
+        case 'opioid':
+            medID = 5;
+            break;
+        case 'oxycodone':
+            medID = '6';
+            break;
+    }
+    
     var postData = {
       'User_ID' : '0',
+      'Medication_ID': medID,
       'Display_Name': intent.slots.Pill.value
     };
     
-    request.delete('https://pillpal-app.de/Takes/0/' + postData.Display_Name, (error, response, body) => {
+    request.delete('https://pillpal-app.de/Takes/0/' + postData.Medication_ID, (error, response, body) => {
         console.log('ERROR: ' + error);
         console.log('BODY: ' + JSON.stringify(body));
         console.log('RESPONSE: ' + JSON.stringify(response));
